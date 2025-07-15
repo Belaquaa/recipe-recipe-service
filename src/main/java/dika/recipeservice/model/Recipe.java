@@ -4,10 +4,11 @@ import dika.recipeservice.enums.DifficultyLevel;
 import dika.recipeservice.enums.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 import java.time.Duration;
@@ -25,7 +26,7 @@ public class Recipe {
     @Column(name = "author_external_id", nullable = false, unique = true, updatable = false, columnDefinition = "UUID")
     private UUID authorExternalId;
 
-    @Column(name = "title", nullable = false, length = 255)
+    @Column(name = "title", nullable = false, length = 100)
     private String title;
 
     @Column(name = "ingredients", nullable = false, length = 255)
@@ -35,10 +36,10 @@ public class Recipe {
     private String description;
 
     @Column(name = "instructions", nullable = true, columnDefinition = "TEXT")
-    @Lob
     private String instructions;
 
     @Column(name = "difficulty", nullable = false)
+    @Enumerated(EnumType.STRING)
     private DifficultyLevel difficulty;
 
     @Column(name = "prep_time", nullable = true, length = 255)
@@ -50,13 +51,14 @@ public class Recipe {
     @Column(name = "servings", nullable = true, length = 255)
     private String servings;
 
-    @Column(name = "status", nullable = true, length = 255)
+    @Column(name = "status", nullable = true)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Column(name = "created_at", nullable = true, length = 255)
+    @Column(name = "created_at", nullable = true)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = true, length = 255)
+    @Column(name = "updated_at", nullable = true)
     private Instant updatedAt;
 
 }
