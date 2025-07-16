@@ -50,13 +50,13 @@ public class Recipe {
     private DifficultyLevel difficulty;
 
     @Column(name = "prep_time", nullable = true)
-    private Duration prepTime;
+    private Integer prepTime;
 
     @Column(name = "cook_time", nullable = true)
-    private Duration cookTime;
+    private Integer cookTime;
 
     @Column(name = "servings", nullable = true)
-    private int servings;
+    private Integer servings;
 
     @Column(name = "status", nullable = true)
     @Enumerated(EnumType.STRING)
