@@ -33,6 +33,9 @@ public class Recipe {
     @Column(name = "author_external_id", nullable = false, updatable = false, columnDefinition = "UUID")
     private UUID authorExternalId;
 
+    @Column(name = "author_username", nullable = false, updatable = false)
+    private String authorUsername;
+
     @Column(name = "title", nullable = false, length = 100)
     private String title;
 
