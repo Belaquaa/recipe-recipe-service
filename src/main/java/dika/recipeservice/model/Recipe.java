@@ -1,22 +1,34 @@
 package dika.recipeservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dika.recipeservice.enums.DifficultyLevel;
 import dika.recipeservice.enums.Status;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -24,6 +36,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "recipes")
+
 public class Recipe {
 
     @Id
@@ -36,7 +49,7 @@ public class Recipe {
     @Column(name = "author_username", nullable = false, updatable = false)
     private String authorUsername;
 
-    @Column(name = "title", nullable = false, length = 100)
+    @Column(name = "title", nullable = false, length = 100, unique = true)
     private String title;
 
     @Column(name = "ingredients", nullable = false, length = 255)
