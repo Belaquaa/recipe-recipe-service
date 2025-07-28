@@ -16,6 +16,7 @@ import org.springframework.data.elasticsearch.core.IndexOperations;
 @Configuration
 public class ElasticsearchConfig extends ElasticsearchConfiguration {
 
+    // Настройка подключения к Elasticsearch
     @Override
     public ClientConfiguration clientConfiguration() {
         return ClientConfiguration.builder()
@@ -23,9 +24,13 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
                 .build();
     }
 
+    // Создание индекса при запуске приложения
+    // Если индекс уже существует, он не будет пересоздан
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        try{
+        try {
+            // Получаем экземпляр ElasticsearchOperations для работы с индексами
+            //ElasticsearchOperations это интерфейс, который предоставляет методы для работы с индексами и документами в Elasticsearch
             ElasticsearchOperations operations = event.getApplicationContext()
                     .getBean(ElasticsearchOperations.class);
 
@@ -35,7 +40,7 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
                 indexOps.putMapping();
             }
         } catch (Exception e) {
-            log.error("Ошибка при создании индекса: {}", e.getMessage());}
-
+            log.error("Ошибка при создании индекса: {}", e.getMessage());
+        }
     }
 }

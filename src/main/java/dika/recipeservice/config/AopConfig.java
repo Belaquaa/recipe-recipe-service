@@ -8,13 +8,14 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.concurrent.ThreadPoolExecutor;
-
 
 @Configuration
 @EnableAspectJAutoProxy
 @EnableAsync
 public class AopConfig {
+
+    //создаем дополнительный поток для асинхронных задач
+    //в данном случае для индексации рецептов в elasticsearch
     @Bean("elasticsearchTaskExecutor")
     public TaskExecutor elasticsearchTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

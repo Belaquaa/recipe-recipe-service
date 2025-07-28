@@ -1,4 +1,4 @@
-package dika.recipeservice.service;
+package dika.recipeservice.service.impl;
 
 
 import dika.recipeservice.dto.RecipeDto;

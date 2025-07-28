@@ -1,4 +1,4 @@
-package dika.recipeservice;
+package dika.recipeservice.mapper;
 
 
 import dika.recipeservice.dto.RecipeDto;

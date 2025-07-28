@@ -9,11 +9,13 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipePageDto {
+
     private List<RecipeDto> recipes;
     private int currentPage;
     private int pageSize;
@@ -33,6 +35,7 @@ public class RecipePageDto {
                 .hasPrevious(page.hasPrevious())
                 .build();
     }
+
     public static RecipePageDto empty() {
         return RecipePageDto.builder()
                 .recipes(List.of())

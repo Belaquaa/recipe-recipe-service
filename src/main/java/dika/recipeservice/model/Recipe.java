@@ -1,34 +1,22 @@
 package dika.recipeservice.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import dika.recipeservice.enums.DifficultyLevel;
 import dika.recipeservice.enums.Status;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -42,48 +30,34 @@ public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name = "author_external_id", nullable = false, updatable = false, columnDefinition = "UUID")
     private UUID authorExternalId;
-
     @Column(name = "author_username", nullable = false, updatable = false)
     private String authorUsername;
-
     @Column(name = "title", nullable = false, length = 100, unique = true)
     private String title;
-
     @Column(name = "ingredients", nullable = false, length = 255)
     private String ingredients;
-
     @Column(name = "description", nullable = false, length = 255)
     private String description;
-
     @Column(name = "instructions", nullable = true, columnDefinition = "TEXT")
     private String instructions;
-
     @Column(name = "difficulty", nullable = false)
     @Enumerated(EnumType.STRING)
     private DifficultyLevel difficulty;
-
     @Column(name = "prep_time", nullable = true)
     private Integer prepTime;
-
     @Column(name = "cook_time", nullable = true)
     private Integer cookTime;
-
     @Column(name = "servings", nullable = true)
     private Integer servings;
-
     @Column(name = "status", nullable = true)
     @Enumerated(EnumType.STRING)
     private Status status;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = true)
     private Instant createdAt;
-
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = true)
     private Instant updatedAt;
-
 }

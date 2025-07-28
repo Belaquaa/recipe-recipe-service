@@ -4,12 +4,11 @@ package dika.recipeservice.service;
 import co.elastic.clients.elasticsearch._types.query_dsl.MultiMatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import dika.recipeservice.RecipeMapper;
-import dika.recipeservice.RecipeMapperImpl;
 import dika.recipeservice.dto.RecipeDto;
 import dika.recipeservice.dto.RecipeElasticDto;
 import dika.recipeservice.dto.RecipePageDto;
-import dika.recipeservice.model.Recipe;
+import dika.recipeservice.mapper.RecipeMapper;
+import dika.recipeservice.service.impl.RecipeSearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -26,14 +25,20 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RecipeSearchServiceImpl {
+public class RecipeSearchServiceImpl implements RecipeSearchService {
 
     private final RecipeMapper recipeMapper;
     private final ElasticsearchTemplate elasticsearchTemplate;
-    private final RecipeMapperImpl recipeMapperImpl;
 
+    // поиск по полному тексту рецептов
+
+    @Override
     public RecipePageDto fullTextSearch(String searchTerm, int page, int size) {
         try {
+            // Создаем запрос MultiMatchQuery для поиска по нескольким полям
+            // Используем fuzziness для обработки опечаток и ошибок ввода
+            // Устанавливаем веса для полей, чтобы повысить релевантность результатов
+            // Используем оператор OR для объединения условий поиска
             MultiMatchQuery multiMatchQuery = MultiMatchQuery.of(m -> m
                     .query(searchTerm)
                     .fields("title^3.0", "authorUsername^3.0", "description^2.0", "ingredients^2.5")
@@ -46,6 +51,7 @@ public class RecipeSearchServiceImpl {
                     .withPageable(PageRequest.of(page, size))
                     .build();
 
+            // Выполняем поиск в Elasticsearch с помощью созданного запроса
             SearchHits<RecipeElasticDto> searchHits = elasticsearchTemplate
                     .search(searchQuery, RecipeElasticDto.class);
 

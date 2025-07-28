@@ -4,7 +4,7 @@ package dika.recipeservice.controller;
 import dika.recipeservice.dto.RecipeDto;
 import dika.recipeservice.dto.RecipePageDto;
 import dika.recipeservice.service.RecipeSearchServiceImpl;
-import dika.recipeservice.service.RecipeService;
+import dika.recipeservice.service.impl.RecipeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -34,22 +35,22 @@ public class RecipeController {
     }
 
     @PostMapping
-    public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto recipeDto){
+    public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto recipeDto) {
         return ResponseEntity.ok(recipeService.createRecipe(recipeDto));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RecipeDto> getRecipe(@PathVariable Long id){
+    public ResponseEntity<RecipeDto> getRecipe(@PathVariable Long id) {
         return ResponseEntity.ok(recipeService.getRecipe(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecipeDto> updateRecipe(@PathVariable Long id, @RequestBody RecipeDto recipeDto){
+    public ResponseEntity<RecipeDto> updateRecipe(@PathVariable Long id, @RequestBody RecipeDto recipeDto) {
         return ResponseEntity.ok(recipeService.update(id, recipeDto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id){
+    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
         recipeService.deleteRecipe(id);
         return ResponseEntity.noContent().build();
     }

@@ -18,6 +18,4 @@ public interface RecipeSearchRepository extends ElasticsearchRepository<RecipeEl
     List<RecipeElasticDto> findByIngredientsContaining(String ingredient);
 
     List<RecipeElasticDto> findByDescriptionContaining(String keyword);
-
-
 }

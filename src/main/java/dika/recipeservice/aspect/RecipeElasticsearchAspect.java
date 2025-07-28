@@ -1,7 +1,8 @@
 package dika.recipeservice.aspect;
 
 
-import dika.recipeservice.RecipeMapper;
+import dika.recipeservice.mapper.RecipeMapper;
+import dika.recipeservice.exception.RecipeNotFound;
 import dika.recipeservice.exception.SaveException;
 import dika.recipeservice.model.Recipe;
 import dika.recipeservice.repository.RecipeSearchRepository;
@@ -11,6 +12,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -24,12 +26,22 @@ public class RecipeElasticsearchAspect {
     private final RecipeSearchRepository recipeSearchRepository;
     private final RecipeMapper recipeMapper;
 
-    @AfterReturning(value = "execution(* dika.recipeservice.repository.RecipeRepository.save(..))",
-            returning = "savedRecipe")
+    // Определяем точки среза для методов сохранения и удаления рецептов
+    // в репозитории RecipeRepository, чтобы перехватывать их вызовы
+    // и выполнять асинхронную индексацию в Elasticsearch.
+
+    @Pointcut("execution(* dika.recipeservice.repository.RecipeRepository.save(..))")
+    public void recipeSaveMethods() {}
+
+    @Pointcut("execution(* dika.recipeservice.repository.RecipeRepository.deleteById(..))")
+    public void recipeDeleteMethods() {}
+
+    // Перехватываем успешное сохранение рецепта и выполняем асинхронную индексацию
+    @AfterReturning(pointcut = "recipeSaveMethods()", returning = "savedRecipe")
     public void afterSuccessfulSave(Recipe savedRecipe) {
         indexRecipeAsync(savedRecipe);
     }
-
+    // Перехватываем ошибку при сохранении рецепта и выбрасываем исключение SaveException
     @AfterThrowing(value = "execution(* dika.recipeservice.repository.RecipeRepository.save(..))",
             throwing = "ex")
     public void afterSaveError(Exception ex) {
@@ -37,17 +49,22 @@ public class RecipeElasticsearchAspect {
         throw new SaveException("ошибка сохранения");
     }
 
-    @AfterReturning(value = "execution(* dika.recipeservice.repository.RecipeRepository.deleteById(..)) && args(id)")
+    // Перехватываем успешное удаление рецепта по ID и выполняем асинхронное удаление из индекса
+    @AfterReturning(pointcut = "recipeDeleteMethods() && args(id)")
     public void afterDeleteById(Long id) {
         deleteFromIndexAsync(id);
     }
 
+    // Перехватываем ошибку при удалении рецепта и выбрасываем исключение RecipeNotFound
     @Before(value = "execution(* dika.recipeservice.repository.RecipeRepository.delete(..)) && args(recipe)")
     public void beforeDelete(Recipe recipe) {
-        if (recipe != null && recipe.getId() != null) {
+        if (recipe == null && recipe.getId() == null) {
+            throw new RecipeNotFound("Рецепт с ID " + recipe.getId() + " не найден для удаления");
         }
     }
 
+
+    // индексируем рецепт в Elasticsearch после успешного сохранения
     @Async("elasticsearchTaskExecutor")
     protected void indexRecipeAsync(Recipe recipe) {
         try {
@@ -58,6 +75,7 @@ public class RecipeElasticsearchAspect {
         }
     }
 
+    // удаляем рецепт из индекса Elasticsearch после успешного удаления
     @Async("elasticsearchTaskExecutor")
     protected void deleteFromIndexAsync(Long id) {
         try {
