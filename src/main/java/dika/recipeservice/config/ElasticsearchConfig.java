@@ -3,6 +3,7 @@ package dika.recipeservice.config;
 
 import dika.recipeservice.dto.RecipeElasticDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -16,11 +17,13 @@ import org.springframework.data.elasticsearch.core.IndexOperations;
 @Configuration
 public class ElasticsearchConfig extends ElasticsearchConfiguration {
 
+    @Value("${spring.elasticsearch.uris}")
+    private String elasticsearchHost;
     // Настройка подключения к Elasticsearch
     @Override
     public ClientConfiguration clientConfiguration() {
         return ClientConfiguration.builder()
-                .connectedTo("localhost:9200")
+                .connectedTo(elasticsearchHost)
                 .build();
     }
 

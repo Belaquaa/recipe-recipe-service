@@ -56,9 +56,9 @@ public class RecipeElasticsearchAspect {
     }
 
     // Перехватываем ошибку при удалении рецепта и выбрасываем исключение RecipeNotFound
-    @Before(value = "execution(* dika.recipeservice.repository.RecipeRepository.delete(..)) && args(recipe)")
+    @Before(value = "execution(* dika.recipeservice.repository.RecipeRepository.deleteById(..)) && args(recipe)")
     public void beforeDelete(Recipe recipe) {
-        if (recipe == null && recipe.getId() == null) {
+        if (recipe == null || recipe.getId() == null) {
             throw new RecipeNotFound("Рецепт с ID " + recipe.getId() + " не найден для удаления");
         }
     }

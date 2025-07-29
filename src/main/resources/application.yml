@@ -23,7 +23,7 @@ spring:
           create_namespaces: true
 
   elasticsearch:
-    uris: http://localhost:9200
+    uris: localhost:9200
 
 logging:
   level:

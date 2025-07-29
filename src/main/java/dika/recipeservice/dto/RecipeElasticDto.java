@@ -1,7 +1,6 @@
 package dika.recipeservice.dto;
 
 
-import dika.recipeservice.model.Recipe;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -19,15 +18,5 @@ public record RecipeElasticDto(
         @Field(type = FieldType.Text, analyzer = "standard")
         String ingredients,
         @Field(type = FieldType.Text, analyzer = "standard")
-        String description,
-        @Field(type = FieldType.Text, analyzer = "standard")
-        String fullText) {
+        String description) {}
 
-    private static String buildFullText(Recipe recipe) {
-        StringBuilder sb = new StringBuilder();
-        if (recipe.getTitle() != null) sb.append(recipe.getTitle()).append(" ");
-        if (recipe.getDescription() != null) sb.append(recipe.getDescription()).append(" ");
-        if (recipe.getIngredients() != null) sb.append(recipe.getIngredients()).append(" ");
-        return sb.toString().trim();
-    }
-}

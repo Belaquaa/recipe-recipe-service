@@ -1,28 +1,23 @@
 package dika.recipeservice.dto;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class RecipePageDto {
 
-    private List<RecipeDto> recipes;
-    private int currentPage;
-    private int pageSize;
-    private long totalElements;
-    private int totalPages;
-    private boolean hasNext;
-    private boolean hasPrevious;
+public record RecipePageDto(
+        List<RecipeDto> recipes,
+        int currentPage,
+        int pageSize,
+        long totalElements,
+        int totalPages,
+        boolean hasNext,
+        boolean hasPrevious
+) {
 
     public static RecipePageDto from(Page<RecipeDto> page) {
         return RecipePageDto.builder()

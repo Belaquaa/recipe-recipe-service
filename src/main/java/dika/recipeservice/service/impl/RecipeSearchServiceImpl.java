@@ -1,4 +1,4 @@
-package dika.recipeservice.service;
+package dika.recipeservice.service.impl;
 
 
 import co.elastic.clients.elasticsearch._types.query_dsl.MultiMatchQuery;
@@ -7,8 +7,10 @@ import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import dika.recipeservice.dto.RecipeDto;
 import dika.recipeservice.dto.RecipeElasticDto;
 import dika.recipeservice.dto.RecipePageDto;
+import dika.recipeservice.exception.SearchException;
 import dika.recipeservice.mapper.RecipeMapper;
-import dika.recipeservice.service.impl.RecipeSearchService;
+import dika.recipeservice.service.RecipeSearchService;
+import dika.recipeservice.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,7 @@ import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,11 +32,16 @@ public class RecipeSearchServiceImpl implements RecipeSearchService {
 
     private final RecipeMapper recipeMapper;
     private final ElasticsearchTemplate elasticsearchTemplate;
+    private final RecipeService recipeService;
 
     // поиск по полному тексту рецептов
 
+    @Transactional(readOnly = true)
     @Override
     public RecipePageDto fullTextSearch(String searchTerm, int page, int size) {
+        if (searchTerm.isEmpty()) {
+            return recipeService.getAllRecipes(PageRequest.of(page, size));
+        }
         try {
             // Создаем запрос MultiMatchQuery для поиска по нескольким полям
             // Используем fuzziness для обработки опечаток и ошибок ввода
@@ -65,13 +73,13 @@ public class RecipeSearchServiceImpl implements RecipeSearchService {
                     .recipes(recipes)
                     .currentPage(page)
                     .pageSize(size)
+                    .totalElements(searchHits.getTotalHits())
                     .totalPages(calculateTotalPages(searchHits.getTotalHits(), size))
                     .hasNext(page < calculateTotalPages(searchHits.getTotalHits(), size) - 1)
                     .hasPrevious(page > 0)
                     .build();
         } catch (Exception e) {
-            log.error("Ошибка при выполнении поиска: {}", e.getMessage(), e);
-            return RecipePageDto.empty();
+            throw new SearchException("Error during full-text search");
         }
     }
 

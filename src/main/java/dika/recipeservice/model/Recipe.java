@@ -34,30 +34,30 @@ public class Recipe {
     private UUID authorExternalId;
     @Column(name = "author_username", nullable = false, updatable = false)
     private String authorUsername;
-    @Column(name = "title", nullable = false, length = 100, unique = true)
+    @Column(name = "title", nullable = false, length = 100)
     private String title;
     @Column(name = "ingredients", nullable = false, length = 255)
     private String ingredients;
     @Column(name = "description", nullable = false, length = 255)
     private String description;
-    @Column(name = "instructions", nullable = true, columnDefinition = "TEXT")
+    @Column(name = "instructions", columnDefinition = "TEXT")
     private String instructions;
     @Column(name = "difficulty", nullable = false)
     @Enumerated(EnumType.STRING)
     private DifficultyLevel difficulty;
-    @Column(name = "prep_time", nullable = true)
+    @Column(name = "prep_time")
     private Integer prepTime;
-    @Column(name = "cook_time", nullable = true)
+    @Column(name = "cook_time")
     private Integer cookTime;
-    @Column(name = "servings", nullable = true)
+    @Column(name = "servings")
     private Integer servings;
-    @Column(name = "status", nullable = true)
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private Status status;
     @CreationTimestamp
-    @Column(name = "created_at", nullable = true)
+    @Column(name = "created_at")
     private Instant createdAt;
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = true)
+    @Column(name = "updated_at")
     private Instant updatedAt;
 }
