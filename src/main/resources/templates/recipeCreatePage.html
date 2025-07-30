@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание рецепта</title>
+    <style>
+        /* Основные стили для формы */
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .instructions-textarea {
+            height: 150px;
+        }
+
+        .time-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .time-group .form-group {
+            flex: 1;
+        }
+
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .required {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1>Создание нового рецепта</h1>
+
+    <form id="recipeForm" action="/api/v1/recipes" method="POST">
+
+        <!-- Название рецепта -->
+        <div class="form-group">
+            <label for="title">Название рецепта <span class="required">*</span></label>
+            <input type="text" id="title" name="title" required maxlength="100"
+                   placeholder="Введите название рецепта">
+        </div>
+
+        <!-- Ингредиенты -->
+        <div class="form-group">
+            <label for="ingredients">Ингредиенты <span class="required">*</span></label>
+            <textarea id="ingredients" name="ingredients" required maxlength="255"
+                      placeholder="Перечислите ингредиенты через запятую"></textarea>
+        </div>
+
+        <!-- Описание -->
+        <div class="form-group">
+            <label for="description">Краткое описание <span class="required">*</span></label>
+            <textarea id="description" name="description" required maxlength="255"
+                      placeholder="Краткое описание рецепта"></textarea>
+        </div>
+
+        <!-- Инструкции по приготовлению -->
+        <div class="form-group">
+            <label for="instructions">Пошаговые инструкции</label>
+            <textarea id="instructions" name="instructions" class="instructions-textarea"
+                      placeholder="Подробные инструкции по приготовлению"></textarea>
+        </div>
+
+        <!-- Уровень сложности -->
+        <div class="form-group">
+            <label for="difficulty">Уровень сложности <span class="required">*</span></label>
+            <select id="difficulty" name="difficulty" required>
+                <option value="">Выберите уровень сложности</option>
+                <option value="EASY">Легкий</option>
+                <option value="MEDIUM">Средний</option>
+                <option value="HARD">Сложный</option>
+            </select>
+        </div>
+
+        <!-- Время приготовления -->
+        <div class="time-group">
+            <div class="form-group">
+                <label for="prepTime">Время подготовки (мин)</label>
+                <input type="number" id="prepTime" name="prepTime" min="0" max="1440"
+                       placeholder="0">
+            </div>
+
+            <div class="form-group">
+                <label for="cookTime">Время готовки (мин)</label>
+                <input type="number" id="cookTime" name="cookTime" min="0" max="1440"
+                       placeholder="0">
+            </div>
+        </div>
+
+        <!-- Количество порций -->
+        <div class="form-group">
+            <label for="servings">Количество порций</label>
+            <input type="number" id="servings" name="servings" min="1" max="50"
+                   placeholder="1">
+        </div>
+
+        <!-- Статус рецепта -->
+        <div class="form-group">
+            <label for="status">Статус публикации <span class="required">*</span></label>
+            <select id="status" name="status" required>
+                <option value="">Выберите статус</option>
+                <option value="DRAFT">Черновик</option>
+                <option value="PUBLISHED">Опубликован</option>
+                <option value="ARCHIVED">В архиве</option>
+            </select>
+        </div>
+
+        <!-- Кнопка отправки -->
+        <button type="submit" class="submit-btn">Создать рецепт</button>
+    </form>
+</div>
+
+<script>
+    // JavaScript для обработки отправки формы
+    document.getElementById('recipeForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Собираем данные формы
+        const formData = new FormData(this);
+        const recipeData = {
+            title: formData.get('title'),
+            ingredients: formData.get('ingredients'),
+            description: formData.get('description'),
+            instructions: formData.get('instructions'),
+            difficulty: formData.get('difficulty'),
+            prepTime: formData.get('prepTime') ? parseInt(formData.get('prepTime')) : null,
+            cookTime: formData.get('cookTime') ? parseInt(formData.get('cookTime')) : null,
+            servings: formData.get('servings') ? parseInt(formData.get('servings')) : null,
+            status: formData.get('status')
+        };
+
+        // Отправляем данные на сервер
+        fetch('/api/v1/recipes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(recipeData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Рецепт успешно создан!');
+                    this.reset(); // Очищаем форму
+                } else {
+                    alert('Ошибка при создании рецепта');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при отправке данных');
+            });
+    });
+</script>
+</body>
+</html>

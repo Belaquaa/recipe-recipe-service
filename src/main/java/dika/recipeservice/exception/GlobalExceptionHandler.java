@@ -1,10 +1,8 @@
-package dika.recipeservice;
+package dika.recipeservice.exception;
 
 
 import dika.recipeservice.dto.ErrorResponse;
-import dika.recipeservice.exception.RecipeNotFound;
-import dika.recipeservice.exception.SaveException;
-import dika.recipeservice.exception.SearchException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -20,6 +18,7 @@ import java.util.Map;
 
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(RecipeNotFound.class)
@@ -33,6 +32,8 @@ public class GlobalExceptionHandler {
                 extractPath(request)
         );
 
+        log.error("Unexpected error occurred at {}: ", extractPath(request), ex);
+
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
@@ -45,7 +46,7 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 extractPath(request)
         );
-
+        log.error("Save exception at {}: ", extractPath(request), ex);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -58,6 +59,8 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 extractPath(request)
         );
+
+        log.error("Search exception at {}: ", extractPath(request), ex);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -83,6 +86,9 @@ public class GlobalExceptionHandler {
                 extractPath(request)
         );
 
+        log.error("Validation exception at {}: ", extractPath(request), ex);
+
+
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -100,6 +106,8 @@ public class GlobalExceptionHandler {
                 message,
                 extractPath(request)
         );
+        log.error("Method Argument Type Mismatch exception at {}: ", extractPath(request), ex);
+
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
@@ -115,8 +123,7 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 extractPath(request)
         );
-
-
+        log.error("Invalid Argument exception at {}: ", extractPath(request), ex);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
@@ -131,6 +138,8 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 extractPath(request)
         );
+
+        log.error("Internal Server Error exception at {}: ", extractPath(request), ex);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
