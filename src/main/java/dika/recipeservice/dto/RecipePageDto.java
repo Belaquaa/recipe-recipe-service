@@ -8,7 +8,6 @@ import java.util.List;
 
 
 @Builder
-
 public record RecipePageDto(
         List<RecipeDto> recipes,
         int currentPage,
