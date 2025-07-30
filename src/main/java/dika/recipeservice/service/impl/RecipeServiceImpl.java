@@ -30,7 +30,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Transactional(readOnly = true)
     public RecipePageDto getAllRecipes(Pageable pageable) {
         Page<Recipe> recipes = recipeRepository.findAll(pageable);
-        return RecipePageDto.from(recipes.map(recipeMapper::toDto));
+        return recipeMapper.toRecipePageDto(recipes.map(recipeMapper::toDto));
     }
 
     @Transactional

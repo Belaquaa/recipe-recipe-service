@@ -69,15 +69,13 @@ public class RecipeSearchServiceImpl implements RecipeSearchService {
                     .map(recipeMapper::toRecipeDto)
                     .collect(Collectors.toList());
 
-            return RecipePageDto.builder()
-                    .recipes(recipes)
-                    .currentPage(page)
-                    .pageSize(size)
-                    .totalElements(searchHits.getTotalHits())
-                    .totalPages(calculateTotalPages(searchHits.getTotalHits(), size))
-                    .hasNext(page < calculateTotalPages(searchHits.getTotalHits(), size) - 1)
-                    .hasPrevious(page > 0)
-                    .build();
+            return new RecipePageDto(recipes,
+                    page,
+                    size,
+                    searchHits.getTotalHits(),
+                    calculateTotalPages(searchHits.getTotalHits(), size),
+                    page < calculateTotalPages(searchHits.getTotalHits(), size) - 1,
+                    page > 0);
         } catch (Exception e) {
             throw new SearchException("Error during full-text search");
         }
