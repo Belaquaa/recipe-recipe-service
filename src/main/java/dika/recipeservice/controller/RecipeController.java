@@ -1,6 +1,7 @@
 package dika.recipeservice.controller;
 
 
+import dika.recipeservice.dto.RecipeCreateDto;
 import dika.recipeservice.dto.RecipeDto;
 import dika.recipeservice.dto.RecipePageDto;
 import dika.recipeservice.service.RecipeSearchService;
@@ -36,7 +37,7 @@ public class RecipeController {
     }
 
     @PostMapping
-    public ResponseEntity<RecipeDto> createRecipe(@Valid @RequestBody RecipeDto recipeDto) {
+    public ResponseEntity<RecipeDto> createRecipe(@Valid @RequestBody RecipeCreateDto recipeDto) {
         return ResponseEntity.ok(recipeService.createRecipe(recipeDto));
     }
 

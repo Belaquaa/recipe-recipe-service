@@ -1,6 +1,7 @@
 package dika.recipeservice.service.impl;
 
 
+import dika.recipeservice.dto.RecipeCreateDto;
 import dika.recipeservice.mapper.RecipeMapper;
 import dika.recipeservice.dto.RecipeDto;
 import dika.recipeservice.dto.RecipePageDto;
@@ -34,8 +35,8 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Transactional
-    public RecipeDto createRecipe(RecipeDto recipeDto) {
-        return recipeMapper.toDto(recipeRepository.save(recipeMapper.toEntity(recipeDto)));
+    public RecipeDto createRecipe(RecipeCreateDto recipeDto) {
+        return recipeMapper.toDto(recipeRepository.save(recipeMapper.toEntityRecipeCreateDto(recipeDto)));
     }
 
     @Transactional
