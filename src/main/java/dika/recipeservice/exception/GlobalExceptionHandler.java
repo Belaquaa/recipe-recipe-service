@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
                 extractPath(request)
         );
 
-        log.error("Unexpected error occurred at {}: ", extractPath(request), ex);
+        log.warn("Unexpected error occurred at {}: ", extractPath(request), ex);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 extractPath(request)
         );
-        log.error("Save exception at {}: ", extractPath(request), ex);
+        log.warn("Save exception at {}: ", extractPath(request), ex);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
                 extractPath(request)
         );
 
-        log.error("Search exception at {}: ", extractPath(request), ex);
+        log.warn("Search exception at {}: ", extractPath(request), ex);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -86,7 +86,7 @@ public class GlobalExceptionHandler {
                 extractPath(request)
         );
 
-        log.error("Validation exception at {}: ", extractPath(request), ex);
+        log.warn("Validation exception at {}: ", extractPath(request), ex);
 
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -106,7 +106,7 @@ public class GlobalExceptionHandler {
                 message,
                 extractPath(request)
         );
-        log.error("Method Argument Type Mismatch exception at {}: ", extractPath(request), ex);
+        log.warn("Method Argument Type Mismatch exception at {}: ", extractPath(request), ex);
 
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -123,7 +123,7 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 extractPath(request)
         );
-        log.error("Invalid Argument exception at {}: ", extractPath(request), ex);
+        log.warn("Invalid Argument exception at {}: ", extractPath(request), ex);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
@@ -139,7 +139,7 @@ public class GlobalExceptionHandler {
                 extractPath(request)
         );
 
-        log.error("Internal Server Error exception at {}: ", extractPath(request), ex);
+        log.warn("Internal Server Error exception at {}: ", extractPath(request), ex);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
