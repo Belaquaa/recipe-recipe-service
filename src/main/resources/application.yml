@@ -37,3 +37,7 @@ logging:
   level:
     org.springframework.data.elasticsearch: DEBUG
     org.elasticsearch: DEBUG
+
+jwt:
+  secret: aG9sYWtvbGF0ZXRha2ltcHVycHVyZXRha2ltaXNzaW5n
+  expirationMs: 3600000
