@@ -1,9 +1,9 @@
 package dika.recipeservice.aspect;
 
 
-import dika.recipeservice.mapper.RecipeMapper;
 import dika.recipeservice.exception.RecipeNotFound;
 import dika.recipeservice.exception.SaveException;
+import dika.recipeservice.mapper.RecipeMapper;
 import dika.recipeservice.model.Recipe;
 import dika.recipeservice.repository.RecipeSearchRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,16 +31,19 @@ public class RecipeElasticsearchAspect {
     // и выполнять асинхронную индексацию в Elasticsearch.
 
     @Pointcut("execution(* dika.recipeservice.repository.RecipeRepository.save(..))")
-    public void recipeSaveMethods() {}
+    public void recipeSaveMethods() {
+    }
 
     @Pointcut("execution(* dika.recipeservice.repository.RecipeRepository.deleteById(..))")
-    public void recipeDeleteMethods() {}
+    public void recipeDeleteMethods() {
+    }
 
     // Перехватываем успешное сохранение рецепта и выполняем асинхронную индексацию
     @AfterReturning(pointcut = "recipeSaveMethods()", returning = "savedRecipe")
     public void afterSuccessfulSave(Recipe savedRecipe) {
         indexRecipeAsync(savedRecipe);
     }
+
     // Перехватываем ошибку при сохранении рецепта и выбрасываем исключение SaveException
     @AfterThrowing(value = "execution(* dika.recipeservice.repository.RecipeRepository.save(..))",
             throwing = "ex")
@@ -62,7 +65,6 @@ public class RecipeElasticsearchAspect {
             throw new RecipeNotFound("Рецепт с ID " + recipe.getId() + " не найден для удаления");
         }
     }
-
 
     // индексируем рецепт в Elasticsearch после успешного сохранения
     @Async("elasticsearchTaskExecutor")

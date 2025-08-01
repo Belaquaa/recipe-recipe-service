@@ -65,6 +65,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(SendingException.class)
+    public ResponseEntity<ErrorResponse> handleSearchException(SendingException ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Sending Exception",
+                ex.getMessage(),
+                extractPath(request)
+        );
+
+        log.warn("Sending Exception at {}: ", extractPath(request), ex);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(
             MethodArgumentNotValidException ex, WebRequest request) {
@@ -88,7 +103,6 @@ public class GlobalExceptionHandler {
 
         log.warn("Validation exception at {}: ", extractPath(request), ex);
 
-
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -107,7 +121,6 @@ public class GlobalExceptionHandler {
                 extractPath(request)
         );
         log.warn("Method Argument Type Mismatch exception at {}: ", extractPath(request), ex);
-
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
