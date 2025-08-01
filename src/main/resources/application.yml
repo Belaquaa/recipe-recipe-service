@@ -11,6 +11,14 @@ spring:
     password: password
     driver-class-name: org.postgresql.Driver
 
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:admin}
+    password: ${RABBITMQ_PASSWORD:password123}
+    connection-timeout: 30000
+    requested-heartbeat: 60
+
   jpa:
     hibernate:
       ddl-auto: update

@@ -19,6 +19,7 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
 
     @Value("${spring.elasticsearch.uris}")
     private String elasticsearchHost;
+
     // Настройка подключения к Elasticsearch
     @Override
     public ClientConfiguration clientConfiguration() {

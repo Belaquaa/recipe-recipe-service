@@ -1,13 +1,14 @@
 package dika.recipeservice.service.impl;
 
 
+import dika.recipeservice.rabbit.RabbitEventPublisher;
 import dika.recipeservice.dto.RecipeCreateDto;
-import dika.recipeservice.mapper.RecipeMapper;
 import dika.recipeservice.dto.RecipeDto;
 import dika.recipeservice.dto.RecipePageDto;
 import dika.recipeservice.enums.DifficultyLevel;
 import dika.recipeservice.enums.Status;
 import dika.recipeservice.exception.RecipeNotFound;
+import dika.recipeservice.mapper.RecipeMapper;
 import dika.recipeservice.model.Recipe;
 import dika.recipeservice.repository.RecipeRepository;
 import dika.recipeservice.service.RecipeService;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 
@@ -27,6 +27,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final RecipeMapper recipeMapper;
+    private final RabbitEventPublisher rabbitEventPublisher;
 
     @Transactional(readOnly = true)
     public RecipePageDto getAllRecipes(Pageable pageable) {
@@ -36,11 +37,12 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Transactional
     public RecipeDto createRecipe(RecipeCreateDto recipeDto) {
+        rabbitEventPublisher.publishRecipeCreatedEvent(recipeDto);
         return recipeMapper.toDto(recipeRepository.save(recipeMapper.toEntityRecipeCreateDto(recipeDto)));
     }
 
     @Transactional
-    public RecipeDto update(Long id, RecipeDto recipeDto) {
+    public RecipeDto update(Long id, RecipeCreateDto recipeDto) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new RecipeNotFound("Recipe not found"));
         updateFields(recipeDto.description(), recipe::setDescription);
         updateFields(recipeDto.ingredients(), recipe::setIngredients);

@@ -25,8 +25,10 @@ public interface RecipeMapper {
     Recipe toEntity(RecipeDto recipeDto);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "authorExternalId", expression = "java(java.util.UUID.randomUUID())")  //TODO:временно чисто для проверки работы всего остального сервиса
-    @Mapping(target = "authorUsername", constant = "Anonymous")                    //TODO:временно чисто для проверки работы всего остального сервиса
+    @Mapping(target = "authorExternalId", expression = "java(java.util.UUID.randomUUID())")
+    //TODO:временно чисто для проверки работы всего остального сервиса
+    @Mapping(target = "authorUsername", constant = "Anonymous")
+    //TODO:временно чисто для проверки работы всего остального сервиса
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Recipe toEntityRecipeCreateDto(RecipeCreateDto recipeDto);
